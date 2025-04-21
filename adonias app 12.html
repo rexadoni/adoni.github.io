@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Power App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #4CAF50;
+      text-align: center;
+    }
+    .profile {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+    .profile-photo {
+      margin-right: 20px;
+    }
+    .profile-photo img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #4CAF50;
+    }
+    .feature {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    textarea {
+      height: 100px;
+    }
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+      border-radius: 5px 5px 0 0;
+    }
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 10px 16px;
+      transition: 0.3s;
+    }
+    .tab button:hover {
+      background-color: #ddd;
+    }
+    .tab button.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .tabcontent {
+      display: none;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-top: none;
+      background: white;
+      border-radius: 0 0 5px 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚Grade 11 F Student Tools</h1>
+
+  <!-- Your Profile Section -->
+  <div class="profile">
+    <div class="profile-photo">
+      <img src="ADONI.jpg" alt="Your Name">
+    </div>
+    <div class="profile-info">
+      <h2>About Me</h2>
+      <p><strong>Name:</strong> Adonias aragaw </p>
+      <p><strong>School:</strong> Bahirdar preparatory school </p>
+      <p><strong>Class:</strong> 11 F </p>
+      <p><strong>Age:</strong> 18 </p>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tab">
+    <button class="tablinks" onclick="openTab('Notes')">📝 Notes</button>
+    <button class="tablinks" onclick="openTab('Timer')">⏱️ Timer</button>
+    <button class="tablinks" onclick="openTab('Grades')">📊 Grades</button>
+    <button class="tablinks" onclick="openTab('Exam')">📅 Exam</button>
+  </div>
+
+  <!-- Notes Tab -->
+  <div id="Notes" class="tabcontent" style="display:block;">
+    <h2>Quick Notes</h2>
+    <textarea id="note" placeholder="Type your notes here..."></textarea>
+    <button onclick="saveNote()">Save Note</button>
+    <button onclick="clearNote()">Clear</button>
+  </div>
+
+  <!-- Timer Tab -->
+  <div id="Timer" class="tabcontent">
+    <h2>Pomodoro Timer</h2>
+    <div id="timer-display">25:00</div>
+    <button onclick="startTimer()">Start Timer</button>
+    <button onclick="stopTimer()">Stop</button>
+  </div>
+
+  <!-- Grades Tab -->
+  <div id="Grades" class="tabcontent">
+    <h2>Grade Calculator</h2>
+    <input type="number" id="score1" placeholder="Score 1" min="0" max="100">
+    <input type="number" id="score2" placeholder="Score 2" min="0" max="100">
+    <input type="number" id="score3" placeholder="Score 3" min="0" max="100">
+    <button onclick="calculateGrade()">Calculate Average</button>
+    <p id="grade-result"></p>
+  </div>
+
+  <!-- Exam Tab -->
+  <div id="Exam" class="tabcontent">
+    <h2>Exam Countdown</h2>
+    <p>Next exam: <strong>june 20, 2025</strong></p>
+    <p id="countdown"></p>
+  </div>
+
+  <script>
+    // Tab switching
+    function openTab(tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      event.currentTarget.className += " active";
+    }
+
+    // Notes Feature
+    document.getElementById("note").value = localStorage.getItem("savedNote") || "";
+    function saveNote() {
+      const note = document.getElementById("note").value;
+      localStorage.setItem("savedNote", note);
+      alert("Note saved!");
+    }
+    function clearNote() {
+      document.getElementById("note").value = "";
+    }
+
+    // Timer Feature
+    let timerInterval;
+    let timeLeft = 1500; // 25 minutes in seconds
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+    function updateTimer() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById("timer-display").textContent = 
+        `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        alert("Time's up! Take a 5-minute break!");
+        timeLeft = 1500; // Reset timer
+      } else {
+        timeLeft--;
+      }
+    }
+
+    // Grade Calculator
+    function calculateGrade() {
+      const s1 = parseFloat(document.getElementById("score1").value) || 0;
+      const s2 = parseFloat(document.getElementById("score2").value) || 0;
+      const s3 = parseFloat(document.getElementById("score3").value) || 0;
+      const avg = (s1 + s2 + s3) / 3;
+      document.getElementById("grade-result").innerHTML = 
+        `Average Grade: <strong>${avg.toFixed(1)}%</strong>`;
+    }
+
+    // Exam Countdown
+    function updateCountdown() {
+      const examDate = new Date("2025-06-20");
+      const today = new Date();
+      const diff = examDate - today;
+      const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      document.getElementById("countdown").innerHTML = 
+        `<strong>${days} days</strong> until exam!`;
+    }
+    updateCountdown();
+  </script>
+</body>
+</html>
